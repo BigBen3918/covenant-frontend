@@ -9,12 +9,20 @@ const proposal_registry = async (param: any, name: String) => {
             name: name,
         });
 
-        if (res.data.status) {
-            return res.data;
-        } else {
-            return false;
-        }
-    } catch (err) {
+        return res.data.success;
+    } catch (err: any) {
+        return false;
+    }
+};
+
+const proposal_load = async (name: String) => {
+    try {
+        var res = await axios.post("/api/load-proposal", {
+            name: name,
+        });
+
+        return res.data.data;
+    } catch (err: any) {
         return false;
     }
 };
@@ -22,6 +30,7 @@ const proposal_registry = async (param: any, name: String) => {
 // Export Functions
 const Action = {
     proposal_registry,
+    proposal_load,
 };
 
 export default Action;

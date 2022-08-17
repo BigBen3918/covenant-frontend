@@ -5,7 +5,6 @@ import { useFieldArray, useForm } from "react-hook-form";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import classNames from "classnames";
 import { useQuery } from "@apollo/client";
-import { StringOptions } from "sass";
 import {
     FormTextField,
     FormSelect,
@@ -38,6 +37,7 @@ const ProposalForm = (props: Props) => {
     const [time, setTime] = useState("");
     const [snapshot, setSnapshot] = useState<SnapShotData[]>([]);
     const [voteOption, setVoteOption] = useState<SnapShotData[]>([]);
+    const [endTime, setEndTime] = useState(0);
     useEffect(() => {
         if (props.name == "qidao") {
             setName("qidao.eth");
@@ -60,6 +60,7 @@ const ProposalForm = (props: Props) => {
             setVoteOption(temp);
         }
         const date = new Date(data?.proposals[e].end * 1000);
+        setValue("endTime", (data?.proposals[e].end * 1000).toString());
         timeStyle(date);
     };
 
@@ -68,8 +69,8 @@ const ProposalForm = (props: Props) => {
         const hour = myHour(date);
         const day = date.getDate();
         const year = date.getFullYear();
-        const endTime = month + " " + day + ", " + year + ", " + hour;
-        setTime(endTime);
+        const result = month + " " + day + ", " + year + ", " + hour;
+        setTime(result);
     };
 
     const myMonth = (date: Date) => {
@@ -155,7 +156,7 @@ const ProposalForm = (props: Props) => {
             votePercentNum: [{ value: 10 }],
             range: [{ value: [0, 10] }],
             rangeNum: [{ value: [0, 10] }],
-            payout: [{ value: 0 }],
+            payout: "0",
         },
     });
 
@@ -178,10 +179,10 @@ const ProposalForm = (props: Props) => {
         name: "rangeNum",
     });
 
-    const { append: payoutAppend, remove: payoutRemove } = useFieldArray({
-        control,
-        name: "payout",
-    });
+    // const { append: payoutAppend, remove: payoutRemove } = useFieldArray({
+    //     control,
+    //     name: "payout",
+    // });
 
     const onFormSubmit = async (value: any) => {
         // navigate("confirm", {
@@ -190,6 +191,7 @@ const ProposalForm = (props: Props) => {
         //     },
         // });
         const result = await Action.proposal_registry(value, props.name);
+        console.log(value);
         if (result) alert("ok");
         else alert("error");
     };
@@ -203,7 +205,7 @@ const ProposalForm = (props: Props) => {
         votePercentNumAppend({ value: 0 });
         rangeAppend({ value: [0, 10] });
         rangeNumAppend({ value: [0, 10] });
-        payoutAppend({ value: 0 });
+        // payoutAppend(0);
     };
 
     const onDeleteGaugeVariable = (idx?: number | number[]) => {
@@ -211,7 +213,7 @@ const ProposalForm = (props: Props) => {
         votePercentNumRemove(idx);
         rangeRemove(idx);
         rangeNumRemove(idx);
-        payoutRemove(idx);
+        // payoutRemove(idx);
     };
 
     return (

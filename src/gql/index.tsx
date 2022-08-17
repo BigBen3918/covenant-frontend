@@ -5,7 +5,7 @@ const GET_PROPOSAL = gql`
         proposals(
             first: 20
             skip: 0
-            where: { space_in: ["balancer", $name], state: "pending" }
+            where: { space_in: ["balancer", $name], state: "active" }
             orderBy: "created"
             orderDirection: desc
         ) {
